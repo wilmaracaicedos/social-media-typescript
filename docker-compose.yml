@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: media_backend
+    build: .
+    ports:
+      - 4000:3000
+      - 9229:9229
+    depends_on:
+      - mongo
+      - postgres
+    volumes:
+      - ./:/usr/src/app
+    command: npm run start:debug
+
+  mongo:
+    container_name: media_mongo
+    image: mongo:5
+    ports:
+      - '27019:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 9876
+    volumes:
+      - ./social-media-mongo:/data/db
+
+  postgres:
+    container_name: media_postgres
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=social_media
+      - POSTGRES_USER=wilmar
+      - POSTGRES_PASSWORD=admin987
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./social-media-postgres:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: media_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 5050:80
+
+volumes:
+  social-media-mongo:
+  social-media-postgres:
